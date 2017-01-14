@@ -19,6 +19,7 @@ import matplotlib as _mpl
 import matplotlib.pyplot as _plt
 import matplotlib.gridspec as _gridspec
 import matplotlib.colors as _mcolors
+import matplotlib.cm as _cm
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=-1):
     """
@@ -53,6 +54,7 @@ def discrete_colourmap(N, base_cmap=None):
     # Note that if base_cmap is a string or None, you can si_mply do
     #    return _plt.cm.get_cmap(base_cmap, N)
     # The following works for string, None, or a colormap instance:
+    print type(base_cmap)
     if isinstance(base_cmap, _mcolors.Colormap):
         base = base_cmap
     elif isinstance(base_cmap, str):
@@ -65,5 +67,49 @@ def discrete_colourmap(N, base_cmap=None):
     color_list = base(_np.linspace(0, 1, N))
     cmap_name = base.name + str(N)
     return base.from_list(cmap_name, color_list, N)
+    
+def cmap_discretize(N, cmap):
+    """Return a discrete colormap from the continuous colormap cmap.
 
+        cmap: colormap instance, eg. cm.jet. 
+        N: number of colors.
+
+    Example
+        x = resize(arange(100), (5,100))
+        djet = cmap_discretize(cm.jet, 5)
+        imshow(x, cmap=djet)
+    """
+
+    if type(cmap) == str:
+        cmap = _plt.get_cmap(cmap)
+    colors_i = _np.concatenate((_np.linspace(0, 1., N), (0.,0.,0.,0.)))
+    colors_rgba = cmap(colors_i)
+    indices = _np.linspace(0, 1., N+1)
+    cdict = {}
+    for ki,key in enumerate(('red','green','blue')):
+        cdict[key] = [ (indices[i], colors_rgba[i-1,ki], colors_rgba[i,ki])
+                       for i in xrange(N+1) ]
+    # Return colormap object.
+    return _mcolors.LinearSegmentedColormap(cmap.name + "_%d"%N, cdict, 1024)
+    
+
+def colorbar_index(fig, cax, ncolors, cmap, drape_min_threshold, drape_max):
+    discrete_cmap = discrete_colourmap(ncolors, cmap)
+    
+    mappable = _cm.ScalarMappable(cmap=discrete_cmap)
+    mappable.set_array([])
+    #mappable.set_clim(-0.5, ncolors + 0.5)
+    mappable.set_clim(drape_min_threshold, drape_max)
+    
+    print type(fig)
+    print type(mappable)
+    print type(cax)
+    print 
+    cbar = fig.colorbar(mappable, cax=cax)
+    print type(cbar)
+    #cbar.set_ticks(_np.linspace(0, ncolors, ncolors))
+    cbar.set_ticks(_np.linspace(drape_min_threshold, drape_max, ncolors+1))
+    #cbar.set_ticklabels(range(ncolors))
+    
+    return cbar
 
