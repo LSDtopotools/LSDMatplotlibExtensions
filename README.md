@@ -10,3 +10,9 @@ Functionality includes:
 - Modifiying the default colour maps , i.e.to create:
  - Truncated colourmaps
  - Discreet colourmaps
+
+
+## Installation
+To install locally, download the pacakge, and run `pip install . ` from within the same directory as the `setup.py` script. To reinstall, say after making changes to this module, run `pip install --upgrade .`.
+
+You can also just place the `lsdmatplotlibextensions` folder in your working directory, or append to your PYTHONPATH.
