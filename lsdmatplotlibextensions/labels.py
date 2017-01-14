@@ -8,6 +8,7 @@ Created on Mon Oct 10 16:09:29 2016
 
 from math import atan2 as _atan2, degrees as _degrees
 import numpy as _np
+import re as _re
 
 #Label line with line2D label data
 def labelLine(line,x,label=None,align=True,**kwargs):
@@ -91,9 +92,9 @@ def make_line_label(fname):
     Makes a string by splitting a file name. 
     """
     # Passing a list of delimiters to the re.split function
-    part1 = re.split("[_.]", fname)[0]
-    part2 = re.split("[_.]", fname)[1]
-    part3 = re.split("[_.]", fname)[2]
+    part1 = _re.split("[_.]", fname)[0]
+    part2 = _re.split("[_.]", fname)[1]
+    part3 = _re.split("[_.]", fname)[2]
 
     part = part2 + '_' + part3
     print part
