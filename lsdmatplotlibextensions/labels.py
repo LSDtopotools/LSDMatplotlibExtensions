@@ -6,8 +6,8 @@ Created on Mon Oct 10 16:09:29 2016
 @stackoverflow: http://stackoverflow.com/questions/16992038/inline-labels-in-matplotlib
 """
 
-from math import atan2,degrees
-import numpy as np
+from math import atan2 as _atan2, degrees as _degrees
+import numpy as _np
 
 #Label line with line2D label data
 def labelLine(line,x,label=None,align=True,**kwargs):
@@ -36,11 +36,11 @@ def labelLine(line,x,label=None,align=True,**kwargs):
         #Compute the slope
         dx = xdata[ip] - xdata[ip-1]
         dy = ydata[ip] - ydata[ip-1]
-        ang = degrees(atan2(dy,dx))
+        ang = _degrees(_atan2(dy,dx))
 
         #Transform to screen co-ordinates
-        pt = np.array([x,y]).reshape((1,2))
-        trans_angle = ax.transData.transform_angles(np.array((ang,)),pt)[0]
+        pt = _np.array([x,y]).reshape((1,2))
+        trans_angle = ax.transData.transform_angles(_np.array((ang,)),pt)[0]
 
     else:
         trans_angle = 0
@@ -81,7 +81,7 @@ def labelLines(lines,align=True,xvals=None,**kwargs):
 
     if xvals is None:
         xmin,xmax = ax.get_xlim()
-        xvals = np.linspace(xmin,xmax,len(labLines)+2)[1:-1]
+        xvals = _np.linspace(xmin,xmax,len(labLines)+2)[1:-1]
 
     for line,x,label in zip(labLines,xvals,labels):
         labelLine(line,x,label,align,**kwargs)
